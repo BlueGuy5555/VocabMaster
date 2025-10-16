@@ -1,7 +1,6 @@
 from flask import Flask, redirect, render_template, request
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
-from word import *
 
 app = Flask(__name__)
 
@@ -85,3 +84,4 @@ def progress():
     return render_template("progress.html", words=words)
 if __name__ == '__main__':
     app.run(debug=True)
+
