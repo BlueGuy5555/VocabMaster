@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Your Progress | VocabMaster</title>
+  <style>
+    body {
+      background: linear-gradient(145deg, #0d0d12 0%, #131323 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      background: linear-gradient(90deg, #8b5cf6, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      background: #17171f;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    th,
+    td {
+      padding: 15px;
+      text-align: center;
+    }
+
+    th {
+      background: #8b5cf6;
+    }
+
+    tr:nth-child(even) {
+      background: #1e1e2a;
+    }
+
+    a {
+      margin-top: 25px;
+      color: #22d3ee;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>📘 Your Progress</h1>
+  {% if words %}
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Learned Word</th>
+    </tr>
+    {% for w in words %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ w.learned_words }}</td>
+    </tr>
+    {% endfor %}
+
+  </table>
+  {% else %}
+  <p>No learned words yet 😅</p>
+  {% endif %}
+  <a href="/">← Back to Home</a>
+</body>
+
+</html>
