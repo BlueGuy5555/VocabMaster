@@ -68,24 +68,43 @@ def home():
 
 @app.route("/add", methods=["POST"])
 def add():
-    global home_words
-    home_words = ast.literal_eval(request.form.get("words"))
-    value = request.form.get("add")
-    if not value:
-        return "No word provided", 400
-    delete = session.query(New_words).filter(New_words.words == value).delete()
-    session.commit()
-    new_topic = Topics(learned_words=value)
-    session.add(new_topic)
-    session.commit()
-    return redirect("/")
+    try:
+        global home_words
+        home_words = ast.literal_eval(request.form.get("words"))
+        value = request.form.get("add")
+        if not value:
+            return "No word provided", 400
+        delete = session.query(New_words).filter(New_words.words == value).delete()
+        session.commit()
+        new_topic = Topics(learned_words=value)
+        session.add(new_topic)
+        session.commit()
+        return redirect("/")
+    except:
+        return "something went wrong when add new word!"
 
 
 @app.route("/progress", methods=["POST", "GET"])
 def progress():
     words = session.query(Topics).filter(Topics.id > 3980).all()
     return render_template("progress.html", words=words)
+
+@app.route("/delete", methods=["POST"])
+def delete():
+    try:
+        value = request.form.get("delete")
+        if not value:
+            return "No word provided", 400
+        delete = session.query(Topics).filter(Topics.learned_words == value).delete()
+        session.commit()
+        return redirect("/progress")
+    except:
+        return "something went wrong when deleting!"
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
 
