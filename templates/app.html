@@ -413,7 +413,7 @@
     <p>
       {% for word in full_topic %}
       {% if word.strip("[]{}()\\/@#$%^&*(-_=+1234567890.?!,\"").lower() in topic %}
-      <span style="background-color: yellow; color: black;">{{ word }}</span>
+      <span class="copy" style="background-color: yellow; color: black;">{{ word }}</span>
       {% else %}
       <span>{{ word }}</span>
       {% endif %}
@@ -427,8 +427,25 @@
     function copyWord(word) {
       navigator.clipboard.writeText(word);
     }
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("copy")) {
+        const word = e.target.textContent.trim();
+        navigator.clipboard.writeText(word);
+
+        // Optional: small visual feedback
+        e.target.style.transition = "all 0.05s";
+        e.target.style.backgroundColor = "black";
+        e.target.style.color = "yellow";
+        setTimeout(() => {
+          e.target.style.backgroundColor = "yellow";
+          e.target.style.color = "black";
+        }, 600);
+      }
+    });
+
   </script>
 
 </body>
 
 </html>
+
