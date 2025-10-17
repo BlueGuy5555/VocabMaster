@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, request
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
+import ast
 
 app = Flask(__name__)
 
@@ -24,16 +25,16 @@ session = Session()
 
 
 
-
+home_words = ['You', "haven't", 'entered', 'any', 'text', 'yet!']
 @app.route("/", methods=["POST", "GET"])
 def home():
     getting_back = session.query(New_words).all()
     new_words = [w.words for w in getting_back]
-
+    words = home_words
 
     if request.method == "POST":
         topic_input = request.form.get("topic", "").strip()
-
+        fully_but = topic_input.split()
         if not topic_input:
             return "You didn't enter any word"
 
@@ -41,7 +42,7 @@ def home():
         cleaned_words = []
 
         for word in words:
-            word = word.strip().lower()
+            word = word.strip()
             if len(word) <= 1:
                 continue
             elif word.isdigit():
@@ -51,22 +52,24 @@ def home():
         session.query(New_words).delete()
         session.commit()
         new_words = []
-        for w in cleaned_words:
+        for i, w in enumerate(cleaned_words):
             existing = session.query(Topics).filter(Topics.learned_words == w).first()
-            if not existing and not w in new_words:
-                new_words.append(w)
+            if not existing and not w in new_words and not w.istitle():
+                new_words.append(w.lower())
 
         session.add_all([New_words(words=w) for w in new_words])
         session.commit()
         getting_back = session.query(New_words).all()
         new_words = [w.words for w in getting_back]
-        return render_template("app.html", topic=new_words, index=len(new_words), words=len(words), new_words=len(new_words), learned_words=len(words)-len(new_words))
+        return render_template("app.html", topic=new_words, index=len(new_words), words=len(words), new_words=len(new_words), learned_words=len(words)-len(new_words), full_topic=words, fully_but=fully_but)
     
-    return render_template("app.html", topic=new_words, index=len(new_words), words=0, new_words=0, learned_words=0)
+    return render_template("app.html", topic=new_words, index=len(new_words), words=len(words), new_words=len(new_words), learned_words=len(words)-len(new_words), full_topic=words)
 
 
 @app.route("/add", methods=["POST"])
 def add():
+    global home_words
+    home_words = ast.literal_eval(request.form.get("words"))
     value = request.form.get("add")
     if not value:
         return "No word provided", 400
@@ -84,4 +87,5 @@ def progress():
     return render_template("progress.html", words=words)
 if __name__ == '__main__':
     app.run(debug=True)
+
 
