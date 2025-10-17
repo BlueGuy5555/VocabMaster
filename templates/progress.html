@@ -72,6 +72,11 @@
     <tr>
       <td>{{ loop.index }}</td>
       <td>{{ w.learned_words }}</td>
+      <td>
+      <form action="/delete" method="post">
+        <button type="submit" style="background-color: transparent; border: none; outline: none; scale: 2;" value="{{ w.learned_words }}" name="delete">❌</button>
+      </form>
+      </td>
     </tr>
     {% endfor %}
 
